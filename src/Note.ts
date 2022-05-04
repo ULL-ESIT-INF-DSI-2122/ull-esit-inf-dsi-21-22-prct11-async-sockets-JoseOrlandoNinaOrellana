@@ -1,7 +1,7 @@
 /**
  * Clase Note
  */
- export class Note {
+export class Note {
     /**
      * Constructor
      * @param title Título de la nota
