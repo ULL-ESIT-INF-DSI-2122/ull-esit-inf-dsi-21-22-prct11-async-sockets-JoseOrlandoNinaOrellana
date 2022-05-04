@@ -1,55 +1,41 @@
 import * as net from 'net';
-import { watchFile } from 'fs';
 import { Note } from './Note';
+import { NoteManager } from './NoteManager';
+import { ResponseType } from './ResponseType';
+import { MessageEventEmitter } from './MessageEventEmitter';
 
-export type RequestType = {
-    type: 'add' | 'update' | 'remove' | 'read' | 'list';
-    title?: string;
-    body?: string;
-    color?: 'green' | 'red';
-}
-  
-export type ResponseType = {
-    type: 'add' | 'update' | 'remove' | 'read' | 'list';
-    success: boolean;
-    notes?: Note[];
-}
+net.createServer((connection) => {
+    const getRequest = new MessageEventEmitter(connection);
+    getRequest.on('message', (request) => {
+        let manager: NoteManager = new NoteManager();
+        let note: Note;
+        let output: string = '';
+        console.log('Request from ' + request.user + ':');
+        console.log(request);
 
-if (process.argv.length !== 3) {
-  console.log('Please, provide a filename.');
-} 
-else {
-    const fileName = process.argv[2];
+        if(request.type === 'add') {
+            note = new Note(request.title as string, request.body as string, request.color as string);
+            output += manager.writeNote(request.user, note);
+        }
+        else if(request.type === 'update') {
+            output += manager.updateNote(request.user, request.title as string, request.body as string);
+        }
+        else if(request.type === 'remove') {
+            output += manager.removeNote(request.user, request.title as string);
+        }
+        else if(request.type === 'read') {
+            output += manager.readNote(request.user, request.title as string);
+        }
+        else if(request.type === 'list') {
+            output += manager.listNotes(request.user as string);
+        }
 
-    net.createServer((connection) => {
-        console.log('A client has connected.');
-
-        connection.write(JSON.stringify({'type': 'watch', 'file': fileName}) +
-        '\n');
-
-        watchFile(fileName, (curr, prev) => {
-        connection.write(JSON.stringify({
-            'type': 'change', 'prevSize': prev.size, 'currSize': curr.size}) +
-            '\n');
-        });
-
-        connection.on('data', (dataJSON) => {
-            const message = JSON.parse(dataJSON.toString());
-            
-            if(message.type === 'add') {}
-            else if(message.type === 'update') {}
-            else if(message.type === 'remove') {}
-            else if(message.type === 'read') {}
-            else if(message.type === 'list') {}
-            else {
-                console.log('Message type' + message.type + 'is not valid');
-            }
-        });
-
-        connection.on('close', () => {
-            console.log('A client has disconnected.');
-        });
-    }).listen(60300, () => {
-        console.log('Waiting for clients to connect.');
+        let response: ResponseType = {
+            response: output,
+        }
+        connection.write(JSON.stringify(response) + '\n');
+        connection.end();
     });
-}
+}).listen(60300, () => {
+    console.log('Waiting');
+});
