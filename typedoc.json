@@ -1,4 +1,13 @@
 {
-    "entryPoints": [],
+    "entryPoints": [
+        "src/app.ts",
+        "src/Client.ts",
+        "src/MessageEventEmitter.ts",
+        "src/Note.ts",
+        "src/NoteManager.ts",
+        "src/RequestType.ts",
+        "src/ResponseType.ts",
+        "src/server.ts"
+    ],
     "out": "./docs"
 }
