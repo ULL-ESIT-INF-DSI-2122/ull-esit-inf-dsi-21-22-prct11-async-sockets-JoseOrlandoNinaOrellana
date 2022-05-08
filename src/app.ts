@@ -1,10 +1,11 @@
 import * as net from 'net';
 import * as yargs from 'yargs';
+import { Client } from './Client';
 import { RequestType } from './RequestType';
-import { MessageEventEmitter } from './MessageEventEmitter';
 
+// Petición al servidor
 let request: RequestType = {
-    type: 'add',
+    type: 'none',
     user: '',
 }
 
@@ -169,38 +170,13 @@ yargs.command({
 
 yargs.parse();
 
-/**
- * Clase cliente
- */
-class Client {
-    /**
-     * Constructor
-     * @param socket 
-     */
-    constructor(private socket: net.Socket) {}
+if(request.type !== 'none') {
+    // Creamos un objeto de la clase cliente pasandole el puerto
+    const client = new Client(net.connect({port: 60300}));
 
-    /**
-     * Escribe en el socket una petición al servidor
-     * @param request Petición
-     */
-    makeRequest(request: RequestType) {
-        this.socket.write(JSON.stringify(request) + '\n');
-    }
+    // Realizamos la petición
+    client.makeRequest(request);
 
-    /**
-     * Muetra por pantalla la respuesta del servidor
-     */
-    receiveRespond() {
-        const getResponse = new MessageEventEmitter(this.socket);
-
-        getResponse.on('message', (response) => {
-            console.log('Response from server: ')
-            console.log(response.response)
-        });
-    }
+    // Esperamos la respuesta
+    client.receiveRespond();
 }
-
-const client = new Client(net.connect({port: 60300}));
-
-client.makeRequest(request);
-client.receiveRespond();
