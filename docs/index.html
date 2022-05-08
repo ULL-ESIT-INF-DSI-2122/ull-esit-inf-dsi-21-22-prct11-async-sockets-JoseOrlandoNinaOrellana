@@ -1,0 +1,49 @@
+<!DOCTYPE html><html class="default"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>ull-esit-inf-dsi-21-22-prct11-async-sockets-joseorlandoninaorellana</title><meta name="description" content="Documentation for ull-esit-inf-dsi-21-22-prct11-async-sockets-joseorlandoninaorellana"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="assets/style.css"/><link rel="stylesheet" href="assets/highlight.css"/><script async src="assets/search.js" id="search-script"></script></head><body><script>document.body.classList.add(localStorage.getItem("tsd-theme") || "os")</script><header><div class="tsd-page-toolbar"><div class="container"><div class="table-wrap"><div class="table-cell" id="tsd-search" data-base="."><div class="field"><label for="tsd-search-field" class="tsd-widget search no-caption">Search</label><input type="text" id="tsd-search-field"/></div><ul class="results"><li class="state loading">Preparing search index...</li><li class="state failure">The search index is not available</li></ul><a href="index.html" class="title">ull-esit-inf-dsi-21-22-prct11-async-sockets-joseorlandoninaorellana</a></div><div class="table-cell" id="tsd-widgets"><div id="tsd-filter"><a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a><div class="tsd-filter-group"><div class="tsd-select" id="tsd-filter-visibility"><span class="tsd-select-label">All</span><ul class="tsd-select-list"><li data-value="public">Public</li><li data-value="protected">Public/Protected</li><li data-value="private" class="selected">All</li></ul></div> <input type="checkbox" id="tsd-filter-inherited" checked/><label class="tsd-widget" for="tsd-filter-inherited">Inherited</label><input type="checkbox" id="tsd-filter-externals" checked/><label class="tsd-widget" for="tsd-filter-externals">Externals</label></div></div><a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a></div></div></div></div><div class="tsd-page-title"><div class="container"><h1> ull-esit-inf-dsi-21-22-prct11-async-sockets-joseorlandoninaorellana </h1></div></div></header><div class="container container-main"><div class="row"><div class="col-8 col-content"><div class="tsd-panel tsd-typography">
+<a href="#informe-práctica-11" id="informe-práctica-11" style="color: inherit; text-decoration: none;">
+  <h1>Informe Práctica 11</h1>
+</a>
+
+<a href="#tipo-requesttype" id="tipo-requesttype" style="color: inherit; text-decoration: none;">
+  <h2>Tipo RequestType</h2>
+</a>
+<p>Crearemos un tipo <code>RequestType</code> para la realizar la petición al servidor. Contendrá el tipo de petición, el usurio que realiza la petición y atributos opcionales como el título, cuerpo y color de la nota.</p>
+
+<a href="#tipo-responsetype" id="tipo-responsetype" style="color: inherit; text-decoration: none;">
+  <h2>Tipo ResponseType</h2>
+</a>
+<p>Crearemos un tipo <code>ResponseType</code> para realizar la respuesta del servidor. Contendra un string <code>response</code> que será la respuesta del servidor al comando ejecutado.</p>
+
+<a href="#clase-messageeventemitter" id="clase-messageeventemitter" style="color: inherit; text-decoration: none;">
+  <h2>Clase MessageEventEmitter</h2>
+</a>
+<p>La clase hija <code>MessageEventEmitter</code> de <code>EventEmitter</code> permite emiter eventos. Esta clase emite un evento de tipo <code>message</code> cada vez que recibe un mensaje completo. </p>
+<p>El contructor recibe un objeto <code>EventEmitter</code>, <code>connection</code>. Después registramos un manejador que se ejecuta con cada emisión del evento <code>data</code>. El mensaje se considera completo cuando se envía un &#39;\n&#39;, si no se ha recibido ese caracter todavía se almacena el <code>dataChunk</code> en <code>wholeData</code>. Una vez recibido el caracter &#39;\n&#39;, le quitamos ese caracter a <code>wholeData</code> y emitimos un evento <code>mesage</code> y pasamos el objeto.</p>
+
+<a href="#clase-client" id="clase-client" style="color: inherit; text-decoration: none;">
+  <h2>Clase Client</h2>
+</a>
+<p>La clase <code>Client</code> se encargará de realizar peticiones al servidor y recibir la respuesta a esa petición. </p>
+<p>El contructor recibe como parámetro el socket de la conexión y se guarda como un atributo privado de la clase. </p>
+<p>La función <code>makeRequest</code> realiza la petición al servidor recibiendo como parámetro un tipo <code>RequestType</code>. Para ello escribe en el socket el objeto en formato JSON y además enviaremos el caracter &#39;\n&#39; indicando que el mensaje se ha enviado completo. </p>
+<p>La función <code>receiveRespond</code> se encarga de recibir la respuesta del servidor y mostrarla por pantalla. Crearemos un objeto llamado <code>getResponse</code> de tipo <code>MessageEventEmitter</code> pasandole el socket como parámetro del constructor. Después registramos un manejador que se ejecuta con cada emisión del evento <code>message</code> y se encargará por pantalla la respuesta del servidor.</p>
+
+<a href="#servidor" id="servidor" style="color: inherit; text-decoration: none;">
+  <h2>Servidor</h2>
+</a>
+<p>Crearemos un servidor con <code>createServer</code> que escuchará el puerto 60300. Crearemos <code>getRequest</code> que será un objeto <code>MessageEventEmitter</code>. Resgistramos un manejador que se ejecuta con cada emisión del evento <code>message</code>. Este manejador creará <code>manager</code>, un objeto de tipo <code>NoteManager</code>, que se encargará de ejecutar la petición del cliente. Por último escribiremos la respuesta en el socket y ademas el caracter &#39;\n&#39; indicando final del mensaje.</p>
+
+<a href="#app" id="app" style="color: inherit; text-decoration: none;">
+  <h2>App</h2>
+</a>
+<p>Registramos el comando con <code>command</code> de <code>yargs</code>. Cada vez que se registre un comando crearemos un objeto tipo <code>RequestType</code> que será la petición al servidor. Si el comando es distinto de &#39;none&#39; crearemos un cliente de tipo <code>Client</code> y enviaremos la petición <code>makeRequest</code> pasandole el objeto <code>request</code> y por último esperaremos la respuesta con <code>receiveRespond</code>.</p>
+
+<a href="#ejemplo-de-uso" id="ejemplo-de-uso" style="color: inherit; text-decoration: none;">
+  <h2>Ejemplo de uso</h2>
+</a>
+<p>Petición tipo <code>list</code>:</p>
+<p><img src="https://gyazo.com/64e8334bb56afccea9cdb9c50ee0b1ba.png" alt=""></p>
+<p><img src="https://gyazo.com/235f4a1c174b50ab86af909610e720c2.png" alt=""></p>
+<p>Petición de un usuario que no existe:</p>
+<p><img src="https://gyazo.com/786249c200bf2d5a9338e41e2f1173e6.png" alt=""></p>
+<p><img src="https://gyazo.com/16352aa18891ee361ab4732a305a47df.png" alt=""></p>
+</div></div><div class="col-4 col-menu menu-sticky-wrap menu-highlight"><nav class="tsd-navigation primary"><ul><li class="current"><a href="modules.html">Modules</a></li><li class=" tsd-kind-module"><a href="modules/Client.html">Client</a></li><li class=" tsd-kind-module"><a href="modules/MessageEventEmitter.html">Message<wbr/>Event<wbr/>Emitter</a></li><li class=" tsd-kind-module"><a href="modules/Note.html">Note</a></li><li class=" tsd-kind-module"><a href="modules/NoteManager.html">Note<wbr/>Manager</a></li><li class=" tsd-kind-module"><a href="modules/RequestType.html">Request<wbr/>Type</a></li><li class=" tsd-kind-module"><a href="modules/ResponseType.html">Response<wbr/>Type</a></li></ul></nav></div></div></div><footer class="with-border-bottom"><div class="container"><h2>Legend</h2><div class="tsd-legend-group"><ul class="tsd-legend"><li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li></ul><ul class="tsd-legend"><li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li></ul></div><h2>Settings</h2><p>Theme <select id="theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></p></div></footer><div class="container tsd-generator"><p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p></div><div class="overlay"></div><script src="assets/main.js"></script></body></html>
