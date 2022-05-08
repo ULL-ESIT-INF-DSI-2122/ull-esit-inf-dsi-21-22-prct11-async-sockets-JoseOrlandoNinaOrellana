@@ -1,5 +1,11 @@
 # Informe Práctica 11
 
+Badges:
+
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ULL-ESIT-INF-DSI-2122_ull-esit-inf-dsi-21-22-prct11-async-sockets-JoseOrlandoNinaOrellana&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=ULL-ESIT-INF-DSI-2122_ull-esit-inf-dsi-21-22-prct11-async-sockets-JoseOrlandoNinaOrellana)
+
+[![Coverage Status](https://coveralls.io/repos/github/ULL-ESIT-INF-DSI-2122/ull-esit-inf-dsi-21-22-prct11-async-sockets-JoseOrlandoNinaOrellana/badge.svg?branch=master)](https://coveralls.io/github/ULL-ESIT-INF-DSI-2122/ull-esit-inf-dsi-21-22-prct11-async-sockets-JoseOrlandoNinaOrellana?branch=master)
+
 ## Tipo RequestType
 
 Crearemos un tipo `RequestType` para la realizar la petición al servidor. Contendrá el tipo de petición, el usurio que realiza la petición y atributos opcionales como el título, cuerpo y color de la nota.
